@@ -1,0 +1,11 @@
+insert into cuisine (name) values ('Thai'), ('Indian');
+insert into country_state (name) values ('Assam'), ('Bihar'); 
+insert into restaurant (name, fee, cuisine_id, address_city_id, postal_code, street, district, number, complement, creation_timestamp, update_timestamp) values ('Oppa Gangnan', 2.33, 1, 1, '282001', 'Forest Colony', 'NA', '101', 'NA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), ('Ghandi is milord', 1.33, 2, 2, '400001', 'Colaba', 'NA', '303', 'NA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+insert into payment_method (name) values ('Cash'), ('Credit Card'), ('Debit Card');
+insert into restaurant_payment_method (restaurant_id, payment_id) values (1, 1), (1, 2), (1, 3), (2, 1);
+insert into city (name, state_id) values ('Dhuburi', 1), ('Dibrugarh', 1), ('Ara', 2), ('Barauni', 2);
+insert into item (name, description, price, active, restaurant_id) values ('spiced tofu', 'carrot, coriander, cumin seeds...', 10.39, false, 1);
+insert into permission_group (name) values ('default');    
+insert into permission (name, description, group_id) values ('create_new_user', 'creates a new user', 1);
+insert into user (name, email, password, creation_date) values ('John Doe', 'john@a.com', 'admin1admin', CURRENT_TIMESTAMP);
+insert into user_group (user_id, group_id) values (1,1);
