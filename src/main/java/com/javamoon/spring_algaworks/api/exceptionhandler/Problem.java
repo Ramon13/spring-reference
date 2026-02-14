@@ -3,6 +3,7 @@ package com.javamoon.spring_algaworks.api.exceptionhandler;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -20,4 +21,12 @@ public class Problem {
     private String detail;
     private String userMessage;
     private LocalDateTime timestamp;
+    private List<Field> fields;
+
+    @Builder
+    @Getter
+    public static class Field {
+        private String name;
+        private String userMessage;
+    }
 }

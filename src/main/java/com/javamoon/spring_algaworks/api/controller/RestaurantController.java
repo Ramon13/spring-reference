@@ -12,6 +12,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.javamoon.spring_algaworks.Groups;
 import com.javamoon.spring_algaworks.domain.exception.BusinessException;
 import com.javamoon.spring_algaworks.domain.exception.CityNotFoundException;
 import com.javamoon.spring_algaworks.domain.exception.CuisineNotFoundException;
@@ -29,6 +31,7 @@ import com.javamoon.spring_algaworks.domain.repository.RestaurantRepository;
 import com.javamoon.spring_algaworks.domain.service.RestaurantCreationService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.exc.IgnoredPropertyException;
@@ -56,7 +59,8 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody Restaurant restaurant) {
+    public ResponseEntity<?> save(
+        @RequestBody @Valid Restaurant restaurant) {
         try {
             Restaurant restaurantNew = creationService.create(restaurant);
             return ResponseEntity.status(HttpStatus.CREATED).body(restaurantNew);

@@ -21,6 +21,8 @@ import com.javamoon.spring_algaworks.domain.model.Cuisine;
 import com.javamoon.spring_algaworks.domain.repository.CuisineRepository;
 import com.javamoon.spring_algaworks.domain.service.CuisineCreationService;
 
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/cuisines")
@@ -46,7 +48,7 @@ public class CuisineController {
     @SuppressWarnings("null")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cuisine create(@RequestBody Cuisine cuisine) {
+    public Cuisine create(@RequestBody @Valid Cuisine cuisine) {
         return cuisineRepository.save(cuisine);
     }
 

@@ -16,6 +16,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -23,6 +25,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import com.javamoon.spring_algaworks.api.exceptionhandler.Problem.Field;
 import com.javamoon.spring_algaworks.domain.exception.BusinessException;
 import com.javamoon.spring_algaworks.domain.exception.EntityInUseException;
 import com.javamoon.spring_algaworks.domain.exception.EntityNotFoundExeption;
@@ -36,6 +39,28 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
     
     private static final String GENERIC_USER_MESSAGE = "An unexpected error occurred. Please try again." 
      + "If the problem persists, contact the system administrator";
+
+    @Override
+    protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        BindingResult bindingResult = ex.getBindingResult();
+        List<Field> problemFields = bindingResult.getFieldErrors().stream()
+            .map(field -> Problem.Field.builder()
+                .name(field.getField())
+                .userMessage(field.getDefaultMessage())
+                .build()
+            )
+            .toList();
+
+        String detail = "One or more fields are invalid. Please correct them and try again.";
+        Problem problem = createProblemBuilder(BAD_REQUEST, ProblemType.INVALID_DATA, detail)
+            .userMessage(detail)
+            .fields(problemFields)
+            .build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
 
     @Override
     protected @Nullable ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex,
@@ -63,6 +88,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
         HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         Throwable rootCause = ExceptionUtils.getRootCause(ex);
+        ex.printStackTrace();
 
         if (rootCause instanceof InvalidFormatException invalidFormatEx) {
             return handleInvalidFormat(invalidFormatEx, headers, status, request);
