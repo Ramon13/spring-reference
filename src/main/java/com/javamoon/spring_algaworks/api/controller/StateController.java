@@ -22,6 +22,8 @@ import com.javamoon.spring_algaworks.domain.exception.StateNotFoundException;
 import com.javamoon.spring_algaworks.domain.model.State;
 import com.javamoon.spring_algaworks.domain.repository.StateRepository;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/state")
 public class StateController {
@@ -37,7 +39,7 @@ public class StateController {
     }
 
     @PostMapping
-    public ResponseEntity<State> save(@RequestBody State state) {
+    public ResponseEntity<State> save(@RequestBody @Valid State state) {
         State stateDb = stateRepository.save(state);
         return ResponseEntity.status(HttpStatus.CREATED).body(stateDb);
     }
@@ -50,7 +52,8 @@ public class StateController {
             return ResponseEntity.notFound().build();
         }
 
-        BeanUtils.copyProperties(state, stateDb, "id");
+        BeanUtils.copyProperties(state, stateDb.get(), "id");
+        
         stateRepository.save(stateDb.get());
 
         return ResponseEntity.ok(stateDb.get());

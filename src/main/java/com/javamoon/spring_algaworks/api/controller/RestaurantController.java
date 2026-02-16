@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.javamoon.spring_algaworks.Groups;
 import com.javamoon.spring_algaworks.domain.exception.BusinessException;
 import com.javamoon.spring_algaworks.domain.exception.CityNotFoundException;
 import com.javamoon.spring_algaworks.domain.exception.CuisineNotFoundException;
@@ -59,8 +56,7 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(
-        @RequestBody @Valid Restaurant restaurant) {
+    public ResponseEntity<?> save(@RequestBody @Valid Restaurant restaurant) {
         try {
             Restaurant restaurantNew = creationService.create(restaurant);
             return ResponseEntity.status(HttpStatus.CREATED).body(restaurantNew);
@@ -70,7 +66,7 @@ public class RestaurantController {
     }
 
     @PutMapping("/{restaurantId}")
-    public ResponseEntity<?> edit(@PathVariable Long restaurantId, @RequestBody Restaurant restaurant) {
+    public ResponseEntity<?> edit(@PathVariable Long restaurantId, @RequestBody @Valid Restaurant restaurant) {
         try {
             Restaurant currentRestaurant = creationService.findOrElseThrow(restaurantId);
     
@@ -85,8 +81,8 @@ public class RestaurantController {
     }
 
     @PatchMapping("/{restaurantId}")
-    public ResponseEntity<?> partiallyEdit(@PathVariable Long restaurantId, @RequestBody Map<String, Object> fields,
-        HttpServletRequest request) {
+    public ResponseEntity<?> partiallyEdit(@PathVariable Long restaurantId, 
+        @RequestBody Map<String, Object> fields, HttpServletRequest request) {
         ServletServerHttpRequest servletHttpRequest = new ServletServerHttpRequest(request);
 
         try {
@@ -112,10 +108,4 @@ public class RestaurantController {
             throw new HttpMessageNotReadableException(e.getMessage(), e, servletHttpRequest);
         }
     }
-
-    // @GetMapping("/test")
-    // public ResponseEntity<Restaurant> test(String name) {
-    //     Restaurant rest = repository.findFirst().orElseThrow();
-    //     return ResponseEntity.ok(rest);
-    // }
 }

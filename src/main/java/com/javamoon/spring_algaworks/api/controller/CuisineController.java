@@ -45,16 +45,14 @@ public class CuisineController {
         return cuisineCreationService.findOrElseThrow(cuisineId);
     }
 
-    @SuppressWarnings("null")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cuisine create(@RequestBody @Valid Cuisine cuisine) {
         return cuisineRepository.save(cuisine);
     }
 
-    @SuppressWarnings("null")
     @PutMapping("/{cuisineId}")
-    public Cuisine update(@PathVariable Long cuisineId, @RequestBody Cuisine cuisine) {
+    public Cuisine update(@PathVariable Long cuisineId, @RequestBody @Valid Cuisine cuisine) {
         Cuisine currentCuisine = cuisineCreationService.findOrElseThrow(cuisineId);
 
         BeanUtils.copyProperties(cuisine, currentCuisine, "id");

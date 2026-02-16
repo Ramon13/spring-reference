@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -40,17 +43,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
     private static final String GENERIC_USER_MESSAGE = "An unexpected error occurred. Please try again." 
      + "If the problem persists, contact the system administrator";
 
+    @Autowired
+    private MessageSource messageSource;
+
     @Override
     protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
             HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         BindingResult bindingResult = ex.getBindingResult();
         List<Field> problemFields = bindingResult.getFieldErrors().stream()
-            .map(field -> Problem.Field.builder()
+            .map(field ->  {
+                String message = messageSource.getMessage(field, LocaleContextHolder.getLocale());
+
+                return Problem.Field.builder()
                 .name(field.getField())
-                .userMessage(field.getDefaultMessage())
-                .build()
-            )
+                .userMessage(message)
+                .build();
+            })
             .toList();
 
         String detail = "One or more fields are invalid. Please correct them and try again.";

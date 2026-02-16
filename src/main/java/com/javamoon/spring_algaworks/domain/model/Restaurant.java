@@ -12,6 +12,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javamoon.spring_algaworks.Groups;
+import com.javamoon.spring_algaworks.core.validation.Fee;
+import com.javamoon.spring_algaworks.core.validation.Multiple;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -47,11 +49,12 @@ public class Restaurant {
     @Column(nullable = false)
     private String name;
 
-    @PositiveOrZero
+    @NotNull
+    // @PositiveOrZero
+    @Fee
+    // @Multiple(number = 5)
     private BigDecimal fee;
 
-    // @JsonIgnore
-    // @JsonIgnoreProperties("hibernateLazyInitializer")
     @Valid
     @ConvertGroup(from = Default.class, to = Groups.RestaurantCreation.class)
     @NotNull
@@ -59,7 +62,9 @@ public class Restaurant {
     @JoinColumn(name = "cuisine_id", nullable = false)
     private Cuisine cuisine;
 
-    // @JsonIgnoreProperties("hibernateLazyInitializer")
+    @Valid
+    @NotNull
+    @ConvertGroup(from = Default.class, to = Groups.RestaurantCreation.class)
     @ManyToOne
     @JoinColumn(name = "address_city_id", nullable = false)
     private City city;

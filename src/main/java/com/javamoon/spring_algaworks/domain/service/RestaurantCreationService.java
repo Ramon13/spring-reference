@@ -3,7 +3,6 @@ package com.javamoon.spring_algaworks.domain.service;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.javamoon.spring_algaworks.domain.exception.CityNotFoundException;
@@ -40,7 +39,7 @@ public class RestaurantCreationService {
         return repository.save(restaurant);
     }
 
-    public Restaurant findOrElseThrow(@NonNull Long restaurantId) {
+    public Restaurant findOrElseThrow(Long restaurantId) {
         return repository.findById(restaurantId)
             .orElseThrow(() -> new RestaurantNotFoundException(restaurantId));
     }
